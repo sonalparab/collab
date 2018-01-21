@@ -149,10 +149,11 @@ void subserver_collab(char * buffer, int to_client, int from_client) {
   decrement_sem(semid);
   int semval = view_sem(semid);
 
+  int collabsemid = -2;
   
   //when all the players have joined
   if(semval == 0){
-    int collabsemid = create_sem(COLLABKEY,1);
+    collabsemid = create_sem(COLLABKEY,1);
   
 
   //if semid fails b/c already created
@@ -207,8 +208,21 @@ void process_collab(char * str, int to_client, int from_client) {
         printf("Random word: %s\n", word);
         //trying the game
 	//SAVE THE WORD IN SHARED MEMORY
-        run_game_collab(word,to_client, from_client);
+	int shmid = create_shm(COLLABKEY);
+	//shmid already made
+	if(shmid == -1){
+	  shmid = shmget(COLLABKEY, (sizeof(char) * 50),0600);
+	}
+	else{
+	  set_shm(word,shmid);
+	}
+
+	char *sharedword = get_shm(shmid);
+	
+	run_game_collab(sharedword,to_client,from_client);
+        //run_game_collab(word,to_client, from_client);
         free(word);
+	remove_shm(shmid);
         printf("new len: %d\n", wordlist_len(list));
     }
     return;

@@ -21,6 +21,8 @@ char * blank_array(int length){
 void run_game_collab(char* word, int to_client, int from_client){
   //GET FROM SHARED MEMORY, WILL NEED TO SEND THE SHMID instead of WORD
   //char * word;
+
+    printf("WORD: %s\n\n",word);
   
     int test;
     int pid = getpid();
