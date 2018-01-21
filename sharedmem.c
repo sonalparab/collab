@@ -78,9 +78,9 @@ void set_shm(char *word,int shmid){
   
 }
 
-int main(){
+/*int main(){
   int id = create_shm(835);
   set_shm("hi there",id);
   printf("word: %s\n",get_shm(id));
   remove_shm(id);
-}
+  }*/

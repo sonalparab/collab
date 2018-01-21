@@ -3,6 +3,7 @@
 #include "game.h"
 #include "sem.h"
 #include "main.h"
+#include "sharedmem.h"
 
 static void sighandler(int signo){
   //to remove the semaphore for now
@@ -18,7 +19,7 @@ static void sighandler(int signo){
       remove_sem(semid);
     }
 
-    int semid = semget(COLLABKEY,1,0600);
+    semid = semget(COLLABKEY,1,0600);
   
     //if semid fails b/c doesn't exist
     if(semid == -1){
@@ -148,6 +149,7 @@ void subserver_collab(char * buffer, int to_client, int from_client) {
   decrement_sem(semid);
   int semval = view_sem(semid);
 
+  
   //when all the players have joined
   if(semval == 0){
     int collabsemid = create_sem(COLLABKEY,1);
@@ -161,14 +163,15 @@ void subserver_collab(char * buffer, int to_client, int from_client) {
     }
   }
 
-  while(1){
+  //for the semval thing
+  /*while(1){
     semval = view_sem(collabsemid);
     if(semval){
       decrement_sem(collabsemid);
       process_collab(buffer, to_client, from_client);
       increment_sem(collabsemid);
     }
-  }
+    }*/
   
     
   //srand(time(NULL));
@@ -176,7 +179,7 @@ void subserver_collab(char * buffer, int to_client, int from_client) {
   /* while (read(from_client, buffer, sizeof(buffer))) { */
   while (1) {
     /* printf("[SERVER %d] received: %s\n", getpid(), buffer); */
-    process(buffer, to_client, from_client);
+    process_collab(buffer, to_client, from_client);
   }
   increment_sem(semid);
 
@@ -203,7 +206,8 @@ void process_collab(char * str, int to_client, int from_client) {
         word = word_pick(list);
         printf("Random word: %s\n", word);
         //trying the game
-        run_game_collab(word, to_client, from_client);
+	//SAVE THE WORD IN SHARED MEMORY
+        run_game_collab(word,to_client, from_client);
         free(word);
         printf("new len: %d\n", wordlist_len(list));
     }

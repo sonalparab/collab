@@ -1,5 +1,7 @@
 #include "game.h"
 #include "pipe_networking.h"
+#include "sem.h"
+#include "sharedmem.h"
 
 char * blank_array(int length){
     char * array = calloc(length,sizeof(char));
@@ -16,7 +18,10 @@ char * blank_array(int length){
     }*/
 
 
-void run_game_collab(char * word, int to_client, int from_client){
+void run_game_collab(char* word, int to_client, int from_client){
+  //GET FROM SHARED MEMORY, WILL NEED TO SEND THE SHMID instead of WORD
+  //char * word;
+  
     int test;
     int pid = getpid();
     char * message = (char *) calloc(BUFFER_SIZE, sizeof(char));
@@ -41,9 +46,11 @@ void run_game_collab(char * word, int to_client, int from_client){
     while(1){
 
       //semaphore and shared memory stuffs here
+      //MAKE A SEMAPHORE TO KEEP TRACK OF THE BACK AND FORTH STUFF
+      //GET THE WORD FROM SHARED MEMORY ON TOP
 
       //making the actual turn call
-      won = run_turn(&wrong_guesses, guessing_array, guessed_letters, &g, word, to_client, from_client);
+      won = run_turn(len,&wrong_guesses, guessing_array, guessed_letters, &g, word, to_client, from_client);
       //check if player lost
       if(wrong_guesses == 6){
 	hangman = (char *) calloc(BUFFER_SIZE,sizeof(char));
@@ -83,8 +90,16 @@ void run_game_collab(char * word, int to_client, int from_client){
     
 }
 
-int run_turn(int *wrong_guesses, char* guessing_array, char* guessed_letters, int *g, char * word, int to_client, int from_client){
+int run_turn(int len,int *wrong_guessespointer, char* guessing_array, char* guessed_letters, int *index, char * word, int to_client, int from_client){
+    int wrong_guesses = *wrong_guessespointer;
+    int g = *index;
+    //printf("LEN: %d\n\n",len);
+    
     int pid = getpid();
+    //input (guess) with potentially multiple characters and newline
+    char input[100];
+    //letter guessed
+    char letter;
     // string containing hang man
     char * hangman;
     // to send number of wrong guesses
@@ -252,6 +267,9 @@ int run_turn(int *wrong_guesses, char* guessing_array, char* guessed_letters, in
     if(!t){
       wrong_guesses++;
     }
+
+    *index = g;
+    *wrong_guessespointer = wrong_guesses;
 
     return wrong_guesses;
 }
