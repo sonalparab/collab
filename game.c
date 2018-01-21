@@ -40,6 +40,8 @@ void run_game_collab(char * word, int to_client, int from_client){
     int won = 0;
     while(1){
 
+      //semaphore and shared memory stuffs here
+
       //making the actual turn call
       won = run_turn(&wrong_guesses, guessing_array, guessed_letters, &g, word, to_client, from_client);
       //check if player lost
