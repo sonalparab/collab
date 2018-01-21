@@ -1,0 +1,64 @@
+DEVLOG -- Hangman by Sonal Parab and Helen Ye
+
+yeH -- 2017-12-31 18:28
+**************************
+Generating word functionality
+    Creates a list of strings that is read from a file, line by line
+
+yeH -- 2018-01-01 16:24
+**************************
+Finish generating words, with methods for use in the actual game such as
+picking words
+    * Also, plug memory leaks
+
+parabS -- 2018-01-02 18:37
+**************************
+Hangman art
+
+parabS -- 2018-01-03 22:40
+**************************
+Basic hangman game
+
+parabS -- 2018-01-04 20:56
+**************************
+Some error catching in hangman game
+
+yeH -- 2018-01-07 22:34
+**************************
+Attempt to make code work with forking server/client relationship
+    * Did not work
+
+yeH -- 2018-01-08 10:13
+**************************
+Debugging of forking server/client
+    * Still doesn't work
+
+yeH -- 2018-01-09 11:41
+**************************
+More debugging of forking server/client
+Ran into lots of issues, such as reading strange things
+    * Kind of works
+
+parabS -- 2018-01-09 23:57
+**************************
+Debugging server/client
+    *Still kind of works
+
+parabS -- 2018-01-11 00:31
+**************************
+Debugging server/client
+    *Mostly works, but still trouble with sending errors
+
+yeH -- 2018-01-11 09:40
+**************************
+Add more descriptive prints for the subserver
+    * Issue where the guessing array is not updated
+Also seed random when the subserver is created so the words picked vary
+
+parabS -- 2018-01-12 15:24
+**************************
+Sending the man to the subserver
+
+parabS -- 2018-01-13 00:38
+**************************
+Add more descriptive prints for the subserver

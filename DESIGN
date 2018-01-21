@@ -1,0 +1,102 @@
+=======================
+||   H A N G M A N   ||
+=======================
+
+A Project Proposal by Sonal Parab and Helen Ye
+
+We are proposing to make a hangman game, one mode that is a cooperative game
+of 2-3 people, or a competition with two players max. The coop version
+will involve the people taking turns guessing letters, while the competition
+will allow a player who guessed a correct letter to guess again. There will
+also be a single player mode where a person can play alone if they so wish.
+This goes on until all the letters have been guessed, or the man is hanged.
+
+Our MVP will involve a text-based interface in the terminal. If time permits,
+we will expand this to a GUI using ncurses. The user will be prompted to pick
+a game mode, and if it is multiplayer, it will wait for anther user to join
+the same mode (using networking). Then, the user will be shown blank spaces
+(e.g. _ _ _ _ _ ) to indicate how many letters are in the word. The user will
+be prompted to guess a letter, and if it is in the word, all occurrences of
+the letter will be revealed. If not, a part of the man will be drawn on the
+noose. All letters previously guessed will be shown to the player as they
+progress.
+
+================
+TECHNICAL DESIGN
+================
+
+Server running at all times.
+    - When server starts, it will read the list of words from the file:
+
+            /usr/share/dict/american-english
+
+       and create an array of words that have a minimum of 6 letters.    
+    - Subserver forked to process each separate game, picking a random word
+      from the array.
+    - Semaphore created for each game allowing only as many players as
+       the mode permits.
+
+Client connects over socket. (Sorry unclear understanding of networking)
+    - The player will select a mode.
+      - If the mode is multiplayer, the subserver will wait for other clients
+        to connect before starting the game.
+
+Subserver runs the game.
+    - The user is shown the blank spaces for the letters in the word.
+    - The user will be asked to enter a letter and the input will be read.
+      - The guessed letter will be added to the guessed letter array.
+        - If the letter was previously guessed, the user will be asked to
+	  pick again.
+      - The appropriate action will be taken based on whether the letter is
+        in the word.
+	- In competition mode, if the letter was in the word the user will
+	  be given another turn, if not the opposing player will be given
+	  a turn.
+	- In cooperative mode, the next player is given a chancer whether
+	  or not the letter was in the word.
+    - The game continues until the man is hanged or the word is guessed.
+      - When the game is completed, the subserver will exit and the server
+        will ask the user if they wish to play again.
+    - We will have sighandler to prevent sore losers from quitting in the
+      middle of a game out of anger.
+
+=====
+ROLES
+=====
+Designing "Graphics" (ASCII art)
+    - Sonal
+
+Server Management
+    Word Gen
+        - Helen
+    Semaphores
+        - Helen
+    Game Creation / Server Forking
+        - Sonal
+
+Subserver
+    Processing Hangman Inputs
+        - Helen
+    Competition vs. Cooperative Behavior
+        - Sonal
+
+Signals
+    - Sonal
+
+GUI (If time permits)
+    - Whoever wants to do it
+
+========
+SCHEDULE
+========
+2018-01-03
+Single-player Hangman (word gen & basic "graphics")
+
+2018-01-07
+Basic client-server version with single-player
+
+2018-01-15
+Adding multiplayer functionalities
+
+2018-01-19
+With GUI?
